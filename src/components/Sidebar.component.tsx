@@ -61,7 +61,7 @@ export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSel
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 text-sm truncate">{query.title}</h3>
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">{query.preview}</p>
-                    <p className="text-xs text-gray-400 mt-2">{formatTimestamp(query.timestamp)}</p>
+                    <p className="text-xs text-gray-400 mt-2">{formatTimestamp(query.created_at)}</p>
                   </div>
                 </div>
               </button>

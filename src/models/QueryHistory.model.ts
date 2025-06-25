@@ -1,6 +1,6 @@
 export interface QueryHistory {
   id: string
   title: string
-  timestamp: Date
+  created_at: Date
   preview: string
 }

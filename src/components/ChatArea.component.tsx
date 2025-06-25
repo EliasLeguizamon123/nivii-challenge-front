@@ -56,7 +56,7 @@ export default function ChatArea({ messages }: ChatAreaProps) {
           >
             <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
             <div className={`text-xs mt-2 text-gray-500`}>
-              {formatTimestamp(message.timestamp)}
+              {formatTimestamp(message.created_at)}
             </div>
           </div>
 

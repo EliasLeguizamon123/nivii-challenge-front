@@ -1,4 +1,6 @@
 export interface Chart {
+    id: number;
+    history_id: number;
     chart_type: string;
     title: string;
     x_axis: string;
