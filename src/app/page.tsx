@@ -1,103 +1,97 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import Sidebar from "@/components/Sidebar.component"
+import MainContent from "@/components/MainContent.component"
+import type { QueryHistory } from "@/models/QueryHistory.model"
+import type { Message } from "@/models/Message.model"
+
+// Mock data
+const mockQueryHistory: QueryHistory[] = [
+  {
+    id: "1",
+    title: "Sales performance Q4 2023",
+    timestamp: new Date("2024-01-15T10:30:00"),
+    preview: "Show me the sales data for Q4 2023",
+  },
+]
+
+const mockMessages: Message[] = [
+  {
+    id: "1",
+    type: "user",
+    content: "Show me the sales data for Q4 2023",
+    timestamp: new Date("2024-01-15T10:30:00"),
+  },
+  {
+    id: "2",
+    type: "assistant",
+    content:
+      "Here's the Q4 2023 sales data analysis. The total revenue was $2.4M, representing a 15% increase from Q3. Key highlights include:\n\n• North America: $1.2M (50% of total)\n• Europe: $720K (30% of total)\n• Asia-Pacific: $480K (20% of total)\n\nThe growth was primarily driven by our new product line launch in November.",
+    timestamp: new Date("2024-01-15T10:30:30"),
+    hasChart: true,
+  },
+]
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedQuery, setSelectedQuery] = useState<string | null>("1")
+  const [messages, setMessages] = useState<Message[]>(mockMessages)
+  const [queryHistory, setQueryHistory] = useState<QueryHistory[]>(mockQueryHistory)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+  const handleNewQuery = () => {
+    setSelectedQuery(null)
+    setMessages([])
+  }
+
+  const handleSelectQuery = (queryId: string) => {
+    setSelectedQuery(queryId)
+    // In a real app, you'd fetch the messages for this query
+    setMessages(mockMessages)
+  }
+
+  const handleSendMessage = (content: string) => {
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      type: "user",
+      content,
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+
+    // Simulate assistant response
+    setTimeout(() => {
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: "assistant",
+        content: "I understand your query. Let me analyze the data and provide you with insights...",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, assistantMessage])
+    }, 1000)
+
+    // Add to query history if it's a new query
+    if (!selectedQuery) {
+      const newQuery: QueryHistory = {
+        id: Date.now().toString(),
+        title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
+        timestamp: new Date(),
+        preview: content,
+      }
+      setQueryHistory((prev) => [newQuery, ...prev])
+      setSelectedQuery(newQuery.id)
+    }
+  }
+
+  return (
+    <>
+      <Sidebar
+        queryHistory={queryHistory}
+        selectedQuery={selectedQuery}
+        onNewQuery={handleNewQuery}
+        onSelectQuery={handleSelectQuery}
+      />
+      <MainContent messages={messages} onSendMessage={handleSendMessage} hasChart={messages.some((m) => m.hasChart)} />
+    </>
+  )
 }
