@@ -5,14 +5,16 @@ import type { QueryHistory } from "@/models/QueryHistory.model"
 
 interface SidebarProps {
   queryHistory: QueryHistory[]
-  selectedQuery: string | null
+  selectedQuery: number | null
   onNewQuery: () => void
-  onSelectQuery: (queryId: string) => void
+  onSelectQuery: (queryId: number) => void
 }
 
 export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSelectQuery }: SidebarProps) {
-  const formatTimestamp = (date: Date) => {
+  const formatTimestamp = (dateInput: string) => {
+    const date = new Date(dateInput)
     const now = new Date()
+
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
 
     if (diffInHours < 1) return "Just now"
@@ -47,9 +49,9 @@ export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSel
               <button
                 key={query.id}
                 onClick={() => onSelectQuery(query.id)}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
+                className={`w-full text-left p-3 rounded-lg transition-colors cursor-pointer ${
                   selectedQuery === query.id
-                    ? "bg-emerald-50 border border-emerald-300"
+                    ? "hover:bg-gray-50 bg-emerald-50 border border-emerald-300"
                     : "hover:bg-gray-50 border border-transparent"
                 }`}
               >

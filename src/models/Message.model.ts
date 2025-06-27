@@ -3,6 +3,6 @@ export interface Message {
   history_id: number;
   type: "user" | "assistant";
   content: string;
-  created_at: Date;
+  created_at: string;
   has_chart?: boolean;
 }

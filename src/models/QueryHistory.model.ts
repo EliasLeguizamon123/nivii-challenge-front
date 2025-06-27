@@ -1,6 +1,6 @@
 export interface QueryHistory {
-  id: string
-  title: string
-  created_at: Date
-  preview: string
+  id: number;
+  title: string;
+  created_at: string;
+  preview: string;
 }

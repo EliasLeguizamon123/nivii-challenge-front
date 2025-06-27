@@ -19,7 +19,8 @@ export default function ChatArea({ messages }: ChatAreaProps) {
     scrollToBottom()
   }, [messages])
 
-  const formatTimestamp = (date: Date) => {
+  const formatTimestamp = (dateInput: string) => {
+    const date = new Date(dateInput.replace(/(\.\d{3})\d+/, "$1"))
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
