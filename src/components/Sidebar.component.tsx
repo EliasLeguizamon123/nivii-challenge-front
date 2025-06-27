@@ -1,16 +1,16 @@
 "use client"
 
 import { Plus, MessageSquare, Clock } from "lucide-react"
-import type { QueryHistory } from "@/models/QueryHistory.model"
+import { useHistoryContext } from "@/context/HistoryContext.context"
 
-interface SidebarProps {
-  queryHistory: QueryHistory[]
-  selectedQuery: number | null
-  onNewQuery: () => void
-  onSelectQuery: (queryId: number) => void
-}
+export default function Sidebar() {
+  const {
+    queryHistory,
+    selectedQuery,
+    handleNewQuery,
+    handleSelectQuery,
+  } = useHistoryContext()
 
-export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSelectQuery }: SidebarProps) {
   const formatTimestamp = (dateInput: string) => {
     const date = new Date(dateInput)
     const now = new Date()
@@ -28,8 +28,8 @@ export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSel
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <button
-          onClick={onNewQuery}
-          className="w-full flex items-center gap-3 px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          onClick={handleNewQuery}
+          className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
         >
           <Plus size={20} />
           <span className="font-medium">New Query</span>
@@ -48,7 +48,7 @@ export default function Sidebar({ queryHistory, selectedQuery, onNewQuery, onSel
             {queryHistory.map((query) => (
               <button
                 key={query.id}
-                onClick={() => onSelectQuery(query.id)}
+                onClick={() => handleSelectQuery(query.id)}
                 className={`w-full text-left p-3 rounded-lg transition-colors cursor-pointer ${
                   selectedQuery === query.id
                     ? "hover:bg-gray-50 bg-emerald-50 border border-emerald-300"

@@ -43,14 +43,14 @@ export default function InputBox({ onSendMessage }: InputBoxProps) {
           onChange={(e) => setInput(e.target.value)}
           onInput={(e) => {
             const target = e.currentTarget
-            target.style.height = "20px" // reset
-            target.style.height = Math.min(target.scrollHeight, 80) + "px" // 4 líneas * 20px
+            target.style.height = "20px"
+            target.style.height = Math.min(target.scrollHeight, 80) + "px"
           }}
           onKeyDown={handleKeyDown}
           placeholder="Ask me anything about your data..."
           className="flex-1 bg-transparent border-none outline-none resize-none text-gray-900 placeholder-gray-500 text-sm leading-[1.2] min-h-[20px] max-h-32 text-left py-1"
           rows={1}
-          style={{ maxHeight: 80, overflowY: "auto" }} // 4 líneas * 20px
+          style={{ maxHeight: 80, overflowY: "auto" }}
           disabled={isLoading}
         />
 
@@ -58,7 +58,7 @@ export default function InputBox({ onSendMessage }: InputBoxProps) {
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="cursor-pointer p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             title="Send message"
           >
             <Send size={18} />
