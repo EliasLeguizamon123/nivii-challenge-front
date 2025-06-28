@@ -17,7 +17,7 @@ interface HistoryContextType {
   setSelectedChart: (id: number | null) => void
   handleNewQuery: () => void
   handleSelectQuery: (id: number) => void
-  handleSelectChart: (id: number) => void
+  handleSelectChart: (id: number | null) => void
   handleSendMessage: (content: string) => Promise<void>
 }
 
@@ -55,11 +55,18 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const handleSelectChart = (chartId: number) => {
-    setSelectedChart(chartId)
+  const handleSelectChart = (chartId: number | null) => {
+    if (chartId === null) {
+      // reseteá la selección o lo que necesites hacer
+      setSelectedChart(null)
+    } else {
+      setSelectedChart(chartId)
+    }
   }
 
-  const handleSendMessage = (content: string): Promise<void> => {
+    const handleSendMessage = async (content: string) => {
+    setIsLoading(true);
+
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
@@ -69,38 +76,24 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setMessages((prev) => [...prev, userMessage])
-    setIsLoading(true)
 
-    return sendMessageToHistory(selectedQuery, content)
-      .then((response) => {
-        setCharts((prev) => [...prev, ...response.charts])
-
-        if (!selectedQuery && response?.history_id) {
-          const newQuery: QueryHistory = {
-            id: response.history_id,
-            title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
-            created_at: new Date().toString(),
-            preview: content,
-          }
-
-          setQueryHistory((prev) => [newQuery, ...prev])
-          setSelectedQuery(newQuery.id)
-
-          return getQueryHistoryById(response.history_id)
-        }
-
-        return getQueryHistoryById(selectedQuery!)
-      })
-      .then((updatedHistory) => {
-        setMessages(updatedHistory.messages)
-        setCharts(updatedHistory.charts)
-      })
-      .catch((error) => {
-        console.error("Error al enviar mensaje:", error)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+    
+    const response = await sendMessageToHistory(selectedQuery, content)
+    
+    setMessages(response.messages);
+    setCharts(response.charts);
+    setIsLoading(false);
+  
+    if (!selectedQuery && response?.id) {
+      const newQuery: QueryHistory = {
+        id: response.id,
+        title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
+        created_at: new Date().toString(),
+        preview: content,
+      }
+      setQueryHistory((prev) => [newQuery, ...prev])
+      setSelectedQuery(newQuery.id)
+    }
   }
 
   return (

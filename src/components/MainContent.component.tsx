@@ -11,10 +11,9 @@ export default function MainContent() {
     isLoading,
     handleSendMessage,
     charts,
-    selectedQuery,
   } = useHistoryContext()
 
-  const hasChart = charts.some(chart => chart.history_id === selectedQuery)
+  const hasChart = charts.length > 0
 
   return (
     <div className="flex-1 flex flex-col bg-white">

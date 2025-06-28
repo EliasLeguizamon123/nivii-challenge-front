@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { User, Bot } from "lucide-react"
 import type { Message } from "@/models/Message.model"
+import { renderFormattedContent } from "@/utilities/FormatText.util"
 
 interface ChatAreaProps {
   messages: Message[]
@@ -56,8 +57,10 @@ export default function ChatArea({ messages, loading }: ChatAreaProps) {
                 : "bg-stone-200 text-gray-900 rounded-2xl rounded-bl-md"
             } px-4 py-3`}
           >
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
-            <div className={`text-xs mt-2 text-gray-500`}>
+            <div className="whitespace-pre-wrap text-sm leading-relaxed">
+              {renderFormattedContent(message.content)}
+            </div>
+            <div className="text-xs mt-2 text-gray-500">
               {formatTimestamp(message.created_at)}
             </div>
           </div>

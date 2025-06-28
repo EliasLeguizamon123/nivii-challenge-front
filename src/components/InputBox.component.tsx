@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Send } from "lucide-react"
 
 interface InputBoxProps {
@@ -12,6 +10,7 @@ interface InputBoxProps {
 export default function InputBox({ onSendMessage }: InputBoxProps) {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,6 +24,7 @@ export default function InputBox({ onSendMessage }: InputBoxProps) {
       await onSendMessage(message)
     } finally {
       setIsLoading(false)
+      textareaRef.current?.focus()
     }
   }
 
@@ -39,6 +39,7 @@ export default function InputBox({ onSendMessage }: InputBoxProps) {
     <form onSubmit={handleSubmit} className="relative">
       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-200 focus-within:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-100 transition-all">
         <textarea
+          ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onInput={(e) => {

@@ -9,6 +9,6 @@ export interface Chart {
 }
 
 export interface ChartData {
-    product: string;
-    quantity: number;
+    label: string;
+    value: number;
 }
