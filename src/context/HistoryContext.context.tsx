@@ -13,6 +13,7 @@ interface HistoryContextType {
   charts: Chart[]
   queryHistory: QueryHistory[]
   selectedChart: number | null
+  isLoading: boolean
   setSelectedChart: (id: number | null) => void
   handleNewQuery: () => void
   handleSelectQuery: (id: number) => void
@@ -34,6 +35,7 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
   const [charts, setCharts] = useState<Chart[]>([])
   const [selectedChart, setSelectedChart] = useState<number | null>(null)
   const [queryHistory, setQueryHistory] = useState<QueryHistory[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     getHistory().then(setQueryHistory)
@@ -57,7 +59,7 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
     setSelectedChart(chartId)
   }
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = (content: string): Promise<void> => {
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
@@ -67,20 +69,38 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setMessages((prev) => [...prev, userMessage])
+    setIsLoading(true)
 
-    const response = await sendMessageToHistory(selectedQuery, content)
-    setCharts((prev) => [...prev, ...response.charts])
+    return sendMessageToHistory(selectedQuery, content)
+      .then((response) => {
+        setCharts((prev) => [...prev, ...response.charts])
 
-    if (!selectedQuery && response?.history_id) {
-      const newQuery: QueryHistory = {
-        id: response.history_id,
-        title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
-        created_at: new Date().toString(),
-        preview: content,
-      }
-      setQueryHistory((prev) => [newQuery, ...prev])
-      setSelectedQuery(newQuery.id)
-    }
+        if (!selectedQuery && response?.history_id) {
+          const newQuery: QueryHistory = {
+            id: response.history_id,
+            title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
+            created_at: new Date().toString(),
+            preview: content,
+          }
+
+          setQueryHistory((prev) => [newQuery, ...prev])
+          setSelectedQuery(newQuery.id)
+
+          return getQueryHistoryById(response.history_id)
+        }
+
+        return getQueryHistoryById(selectedQuery!)
+      })
+      .then((updatedHistory) => {
+        setMessages(updatedHistory.messages)
+        setCharts(updatedHistory.charts)
+      })
+      .catch((error) => {
+        console.error("Error al enviar mensaje:", error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   return (
@@ -91,6 +111,7 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
         charts,
         queryHistory,
         selectedChart,
+        isLoading,
         setSelectedChart,
         handleNewQuery,
         handleSelectQuery,

@@ -31,8 +31,8 @@ export default function ChartArea() {
             className="border px-2 py-1 rounded-md text-sm"
           >
             <option value="" disabled>Select a chart</option>
-            {charts.map((chart) => (
-              <option key={chart.id} value={chart.id}>
+            {charts.map((chart, index) => (
+              <option key={index} value={chart.id}>
                 {chart.title}
               </option>
             ))}

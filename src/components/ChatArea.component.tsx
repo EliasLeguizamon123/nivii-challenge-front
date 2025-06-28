@@ -6,9 +6,10 @@ import type { Message } from "@/models/Message.model"
 
 interface ChatAreaProps {
   messages: Message[]
+  loading: boolean
 }
 
-export default function ChatArea({ messages }: ChatAreaProps) {
+export default function ChatArea({ messages, loading }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -70,6 +71,21 @@ export default function ChatArea({ messages }: ChatAreaProps) {
           )}
         </div>
       ))}
+      {loading && (
+        <div className="flex gap-3 justify-start">
+          <div className="flex-shrink-0">
+            <div className="w-8 h-8 bg-neutral-600 rounded-full flex items-center justify-center">
+              <Bot size={16} className="text-white" />
+            </div>
+          </div>
+
+          <div className="max-w-3xl bg-stone-200 text-gray-900 rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="whitespace-pre-wrap text-sm leading-relaxed italic text-emerald-500 animate-pulse">
+              Thinking...
+            </div>
+          </div>
+        </div>
+      )}
       <div ref={messagesEndRef} />
     </div>
   )

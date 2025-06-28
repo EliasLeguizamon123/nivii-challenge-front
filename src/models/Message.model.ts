@@ -4,7 +4,6 @@ export interface Message {
   type: "user" | "assistant";
   content: string;
   created_at: string;
-  has_chart?: boolean;
 }
 
 export interface MessageRequest {
